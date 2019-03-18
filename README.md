@@ -1,5 +1,7 @@
 # Registrar
-The Registrar automatically registers and deregisters applications or services when they are determined healthy. 
+Registrar automatically registers and deregisters applications or services to a registry. The only registry that is currently supported 
+is a service discovery tool called [Consul](https://www.consul.io/). The Registrar can listen for docker containers startign and stopping as well as
+reading from a static config file. It can use providers (AWS, WAN and local network) to resolve ips or provide additional tags when the application or service registrates.
 
 ## Project background
 This project took a lot if inspiration from [Gliderlabs registrator](https://github.com/gliderlabs/registrator). 
