@@ -88,7 +88,7 @@ provides the ip address of a specified network interface as the applications ip 
 
 
 
-### Registrar
+### Registrars
 registers the discovered applications to one of the implementations below
 
 #### consul
