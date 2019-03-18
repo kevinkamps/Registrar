@@ -23,7 +23,7 @@ The project consist out of three basic type of components. Monitors, Providers a
 *Providers*
 * Local network ip
 * WAN ip address
-* [AWS](https://aws.amazon.com/) ip address
+* [AWS](https://aws.amazon.com/) ip address or tags
 
 *Registries*
 * [Consul](https://www.consul.io/)
