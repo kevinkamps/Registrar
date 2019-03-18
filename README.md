@@ -13,16 +13,19 @@ with all of you.
 
 ## Features
 The project consist out of three basic type of components. Monitors, Providers and Registries.
-Monitors: Monitors for applications
+
+### Overview
+
+*Monitors*
 * Static config file
 * [Docker](https://www.docker.com/)
 
-Providers: Provides additional information before passing the applications found in the monitoring stage to the registries.
+*Providers*
 * Local network ip
 * WAN ip address
 * [AWS](https://aws.amazon.com/) ip address
 
-registrars: registers the application to a service.
+*Registries*
 * [Consul](https://www.consul.io/)
 
 
@@ -76,7 +79,7 @@ Docker labels options:
 Providers are data providers that can provide tags or ip addresses.
 
 #### AWS provider (Ip and Tag provider)
-Provides information about the AWS machine the registrar is running on. It can provide ip addresses and tags
+Provides information about the [AWS](https://aws.amazon.com/) machine the registrar is running on. It can provide ip addresses and tags
 * Ip: only local-ipv4 is supported right now
 * tags: Would only add the following tags:
     * InstanceId
@@ -90,12 +93,11 @@ provides the ip address of a specified network interface as the applications ip 
 
 
 
-### registries
-registers the discovered applications to one of the implementations below.
+### Registries
+Registers the discovered applications to one of the implementations below.
 
 #### consul
-Consul Catalog (Registers to consul for service discovery usage) 
-
+[Consul](https://www.consul.io/) Catalog (Registers to consul for service discovery usage) 
 
 
 ## CLI Options
