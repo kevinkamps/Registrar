@@ -83,7 +83,7 @@ Provides information about the AWS machine the registrar is running on. It can p
 #### Ifconfig provider (Ip provider)
 Provides the WAN ip address as the ip address for the application
 
-#### Network provider (Ip provider)
+#### Local Network provider (Ip provider)
 provides the ip address of a specified network interface as the applications ip address
 
 
@@ -100,45 +100,47 @@ Consul Catalog (Registers to consul for service discovery usage)
 ```
 Usage:
   -monitor-docker-api-version string
-    	Version of the api to use
+        Version of the api to use
   -monitor-docker-enabled
-    	Enables the docker monitor (default true)
+        Enables the docker monitor (default true)
   -monitor-docker-event-buffer-size int
-    	Max number of events to be buffered (default 1024)
+        Max number of events to be buffered (default 1024)
   -monitor-docker-host string
-    	Docker host (default "unix:///var/run/docker.sock")
+        Docker host (default "unix:///var/run/docker.sock")
   -monitor-static-check-delay int
-    	Checks every x seconds whether the service is reachable through the network (OSI layer 3 checks) (default 10)
+        Checks every x seconds whether the service is reachable through the network (OSI layer 3 checks) (default 10)
   -monitor-static-check-timeout int
-    	Check timeout in seconds (default 2)
+        Check timeout in seconds (default 2)
   -monitor-static-config-path string
-    	A path to the static config file (default "./config.yml")
+        A path to the static config file (default "./config.yml")
   -monitor-static-enabled
-    	Enables the static monitor. Only read the config file at startup. (default true)
+        Enables the static monitor. Only read the config file at startup.
   -provider-aws-ip-enabled
-    	Enables the aws provider for ip
+        Enables the aws provider for ip
   -provider-aws-tags-enabled
-    	Enables the aws provider for tags 
+        Enables the aws provider for tags 
   -provider-ifconfig-ip-enabled
-    	Enables the ifconfig.co provider for ip settings
-  -provider-network-interface-name string
-    	Name of the interface to use (default "eth0")
-  -provider-network-ip-enabled
-    	Enables the network provider for ip settings
-  -provider-network-use-ipv4
-    	Has president over network-provider-use-ipv6 (default true)
-  -provider-network-use-ipv6
-    	Can only be used if network-provider-use-ipv4 is set to false
+        Enables the ifconfig.co provider for ip settings
+  -provider-local-network-interface-name string
+        Name of the interface to use (default "eth0")
+  -provider-local-network-ip-enabled
+        Enables the network provider for ip settings
+  -provider-local-network-use-ipv4
+        Has president over network-provider-use-ipv6 (default true)
+  -provider-local-network-use-ipv6
+        Can only be used if network-provider-use-ipv4 is set to false
   -registrar-consul-check-deregister-after int
-    	deregister in seconds (default 60)
+        deregister in seconds (default 60)
   -registrar-consul-check-ttl int
-    	Ttl in seconds (default 10)
+        Ttl in seconds (default 10)
   -registrar-consul-enabled
-    	Enables registration to consul
+        Enables registration to consul
   -registrar-consul-event-buffer-size int
-    	Max number of events to be buffered (default 1024)
+        Max number of events to be buffered (default 1024)
+  -registrar-consul-log-ttl-passes-enabled
+        Logging of ttl passes are enabled if set to true
   -registrar-consul-url string
-    	Consul address (default "http://127.0.0.1:8500")
+        Consul address (default "http://127.0.0.1:8500")
 ```
 
 ## Running as Docker container
