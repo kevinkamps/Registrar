@@ -154,7 +154,7 @@ Usage:
 ```bash
 docker run -d \
     --name=registrar \
-    register.kevinkamps.nl/servicediscovery/registrar:latest \
+    kevinkamps/registrar:latest \
       -help
 ```
 ### Commandline example (monitoring docker containers and registering them with consul. Registering them with the network interface ip):
@@ -163,7 +163,7 @@ docker run -d \
     --name=registrar \
     --net=host \
     --volume=/var/run/docker.sock:/tmp/docker.sock \
-    register.kevinkamps.nl/servicediscovery/registrar:latest \
+    kevinkamps/registrar:latest \
       -monitor-docker-enabled=true -provider-local-network-ip-enabled=true -provider-local-network-interface-name=eth0 -registries-consul-enabled=true -registries-consul-url=http://127.0.0.1:8500 
 ```
 
