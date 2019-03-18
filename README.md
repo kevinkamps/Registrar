@@ -61,12 +61,12 @@ Optional you can use the docker labels below on a container to influence the reg
 are prefixed with "REGISTRAR_" that would indicate that these labels are related to the registrar application.
 
 Docker labels options:
- * REGISTRAR_NAME: "< name >". Name of the service to register
- * REGISTRAR_INGORE: "< true|false >". If set to true all services will be ignored.
- * REGISTRAR_TAG_< name of the tag >: "< value of the tag >". Adds a tag can are used while registrating the application
- * REGISTRAR_< private_port >_NAME: "< name >". Name of the service to register
- * REGISTRAR_< private_port >_IGNORE: "< true|false >" If set to true this services will be ignored. If set to false it will not be ignored even if `REGISTRAR_INGORE` is set to true.
- * REGISTRAR_< private_port >_TAG_< name of the tag >: "< value of the tag >". Adds a tag like `REGISTRAR_TAG_< name of the tag >` but will only add it the the specified port.
+ * `REGISTRAR_NAME`: "< name >". Name of the service to register
+ * `REGISTRAR_INGORE`: "< true|false >". If set to true all services will be ignored.
+ * `REGISTRAR_TAG_< name of the tag >`: "< value of the tag >". Adds a tag can are used while registrating the application
+ * `REGISTRAR_< private_port >_NAME`: "< name >". Name of the service to register
+ * `REGISTRAR_< private_port >_IGNORE`: "< true|false >" If set to true this services will be ignored. If set to false it will not be ignored even if `REGISTRAR_INGORE` is set to true.
+ * `REGISTRAR_< private_port >_TAG_< name of the tag >`: "< value of the tag >". Adds a tag like `REGISTRAR_TAG_< name of the tag >` but will only add it the the specified port.
 
 
 
@@ -164,7 +164,7 @@ docker run -d \
 version: '2'
 services:
   registrar:
-    image: registry.kevinkamps.nl/servicediscovery/registrar:latest
+    image: kevinkamps/registrar:latest
     command: -help
 ```
 
@@ -173,7 +173,7 @@ services:
 version: '2'
 services:
   registrar:
-    image: registry.kevinkamps.nl/servicediscovery/registrar:latest
+    image: kevinkamps/registrar:latest
     network_mode: host
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
