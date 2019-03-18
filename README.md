@@ -191,7 +191,7 @@ services:
 ## Future ideas / plans
 * Add notifiers after the registration process
 * Add public ips to aws provider
-* Add more registrars
+* Add more registries
 
 
 ## Development notes
