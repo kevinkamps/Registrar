@@ -80,7 +80,7 @@ func (this *DockerMonitor) registerContainer(container *dockerapi.Container, pri
 		this.containerIdPublicPortMap[container.ID] = append(this.containerIdPublicPortMap[container.ID], publicPort)
 		this.RegistryService.AddEvent(e)
 	} else {
-		log.Println("Docker: Registration skipped because ignore flag was set")
+		log.Println("Monitor - Docker: Registration skipped because ignore flag was set")
 	}
 }
 func (this *DockerMonitor) containerStopped(container *dockerapi.Container) {

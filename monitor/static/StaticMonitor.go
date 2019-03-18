@@ -87,6 +87,9 @@ func (this *StaticMonitor) Start() {
 			conn, err := net.DialTimeout(check.Application.Protocol, net.JoinHostPort(check.Ip, strconv.Itoa(check.Application.Port)), time.Duration(*this.Configuration.CheckTimout)*time.Second)
 
 			if err != nil || conn == nil {
+				if *this.Configuration.LogChecksEnabled {
+					log.Println(fmt.Sprintf("Monitor - Static config: Check failed for %s %s:%s (timeout %s). Error: %s", check.Application.Protocol, check.Ip, strconv.Itoa(check.Application.Port), time.Duration(*this.Configuration.CheckTimout)*time.Second, err))
+				}
 				e := event.EndEvent{
 					Id: check.EventId,
 				}
@@ -95,6 +98,9 @@ func (this *StaticMonitor) Start() {
 					check.deregistered = true
 				}
 			} else {
+				if *this.Configuration.LogChecksEnabled {
+					log.Println(fmt.Sprintf("Monitor - Static config: Check succeeded for %s %s:%s (timeout %s)", check.Application.Protocol, check.Ip, strconv.Itoa(check.Application.Port), time.Duration(*this.Configuration.CheckTimout)*time.Second))
+				}
 				if check.deregistered {
 					this.registerApplication(check.Ip, check.Application)
 					check.deregistered = false

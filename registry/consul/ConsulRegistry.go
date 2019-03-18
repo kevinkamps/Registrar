@@ -25,7 +25,7 @@ func (this *ConsulRegistry) initConsulConnection() {
 	config.Address = this.Configuration.Url.Host
 	client, err := consulapi.NewClient(config)
 	if err != nil {
-		log.Fatal("consul: ", this.Configuration.Url.Scheme)
+		log.Fatal("Registry - Consul: ", this.Configuration.Url.Scheme)
 	}
 
 	this.consulClient = client
@@ -36,18 +36,18 @@ func (this *ConsulRegistry) initTtlChecks(wg *sync.WaitGroup) {
 	go func() {
 		sleep := time.Duration(*this.Configuration.Ttl) * time.Second / 2
 
-		log.Println(fmt.Sprintf("Consul: Sending ttl passes every %d nanoseconds is activated", sleep))
+		log.Println(fmt.Sprintf("Registry - Consul: Sending ttl passes every %d nanoseconds is activated", sleep))
 		for {
 			for _, registration := range this.registrations {
 				if *this.Configuration.LogTtlPassesEnabled {
-					log.Println(fmt.Sprintf("Consul: Sending ttl pass for %s (%s)", registration.Check.Name, registration.Check.CheckID))
+					log.Println(fmt.Sprintf("Registry - Consul: Sending ttl pass for %s (%s)", registration.Check.Name, registration.Check.CheckID))
 				}
 				this.consulClient.Agent().PassTTL(registration.Check.CheckID, "Pass TTL")
 			}
 			time.Sleep(sleep)
 		}
 		wg.Done()
-		log.Fatal("Consul: Sending ttl passes has stopped")
+		log.Fatal("Registry - Consul: Sending ttl passes has stopped")
 	}()
 }
 
@@ -65,7 +65,7 @@ func (this *ConsulRegistry) Start() {
 
 		if helper.IsInstanceOf(e, (*event.StartEvent)(nil)) {
 			startEvent := e.(*event.StartEvent)
-			log.Println("Consul: start event: ", startEvent)
+			log.Println("Registry - Consul: start event: ", startEvent)
 
 			registration := new(consulapi.AgentServiceRegistration)
 			registration.ID = startEvent.Id
@@ -86,7 +86,7 @@ func (this *ConsulRegistry) Start() {
 			this.consulClient.Agent().ServiceRegister(registration)
 		} else if helper.IsInstanceOf(e, (*event.EndEvent)(nil)) {
 			endEvent := e.(*event.EndEvent)
-			log.Println("Consul: end event: ", endEvent)
+			log.Println("Registry - Consul: end event: ", endEvent)
 			delete(this.registrations, endEvent.Id)
 			this.consulClient.Agent().ServiceDeregister(endEvent.Id)
 		}
