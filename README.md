@@ -34,7 +34,7 @@ Monitors for applications. Technically you could use multiple monitors at the sa
 * Static config monitor
 * Docker monitor
 
-#### Static
+#### Static config
 Monitors a static configuration file and checks if the applications is available and passing it to the registries.
 
 The config file (by default `config.yml`) is using a yaml format. A example is provide below and should be self explanatory:
@@ -56,7 +56,7 @@ applications:
 
 Please not that instead of setting the ip yourself it can be automatically resolved by any of the ip providers available.
 
-Watching the config file for changes at runtime has not been implemented yet. So if you make changes to your config file please restart the registrar. This feature will be added in the future.
+Watching the config file for changes at runtime has not been implemented yet. So if you make changes to your config file please restart the Registrar. This feature will be added in the future.
 
 
 #### Docker
