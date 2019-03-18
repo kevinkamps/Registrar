@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
-	"kevinkamps/registrar/registrar"
-	"kevinkamps/registrar/registrar/event"
+	"kevinkamps/registrar/registry"
+	"kevinkamps/registrar/registry/event"
 	"log"
 	"net"
 	"os"
@@ -33,10 +33,10 @@ type Check struct {
 }
 
 type StaticMonitor struct {
-	RegistrarService *registrar.RegistrarService
-	Configuration    *Configuration
-	checks           map[string]*Check
-	hostname         string
+	RegistryService *registry.RegistryService
+	Configuration   *Configuration
+	checks          map[string]*Check
+	hostname        string
 }
 
 func (this *StaticMonitor) getConf() *StaticConfig {
@@ -77,7 +77,7 @@ func (this *StaticMonitor) Start() {
 		}
 
 		e := this.registerApplication(address, application)
-		this.RegistrarService.ProcessIpProviders(e)
+		this.RegistryService.ProcessIpProviders(e)
 		this.checks[e.Id] = &Check{Application: application, Ip: e.Address, EventId: e.Id, deregistered: false}
 
 	}
@@ -91,7 +91,7 @@ func (this *StaticMonitor) Start() {
 					Id: check.EventId,
 				}
 				if !check.deregistered {
-					this.RegistrarService.AddEvent(&e)
+					this.RegistryService.AddEvent(&e)
 					check.deregistered = true
 				}
 			} else {
@@ -119,7 +119,7 @@ func (this *StaticMonitor) registerApplication(address string, application Stati
 		Tags:    application.Tags,
 	}
 
-	this.RegistrarService.AddEvent(e)
+	this.RegistryService.AddEvent(e)
 
 	return e
 }

@@ -1,7 +1,7 @@
 package local
 
 import (
-	"kevinkamps/registrar/registrar/event"
+	"kevinkamps/registrar/registry/event"
 	"net"
 )
 

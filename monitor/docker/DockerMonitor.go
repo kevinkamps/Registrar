@@ -3,8 +3,8 @@ package docker
 import (
 	"fmt"
 	dockerapi "github.com/fsouza/go-dockerclient"
-	"kevinkamps/registrar/registrar"
-	"kevinkamps/registrar/registrar/event"
+	"kevinkamps/registrar/registry"
+	"kevinkamps/registrar/registry/event"
 	"log"
 	"os"
 	"strconv"
@@ -13,7 +13,7 @@ import (
 )
 
 type DockerMonitor struct {
-	RegistrarService          *registrar.RegistrarService
+	RegistryService           *registry.RegistryService
 	Configuration             *Configuration
 	dockerApi                 *dockerapi.Client
 	containerIdPrivatePortMap map[string][]int
@@ -78,7 +78,7 @@ func (this *DockerMonitor) registerContainer(container *dockerapi.Container, pri
 
 		this.containerIdPrivatePortMap[container.ID] = append(this.containerIdPrivatePortMap[container.ID], privatePort)
 		this.containerIdPublicPortMap[container.ID] = append(this.containerIdPublicPortMap[container.ID], publicPort)
-		this.RegistrarService.AddEvent(e)
+		this.RegistryService.AddEvent(e)
 	} else {
 		log.Println("Docker: Registration skipped because ignore flag was set")
 	}
@@ -90,7 +90,7 @@ func (this *DockerMonitor) containerStopped(container *dockerapi.Container) {
 		e := event.EndEvent{
 			Id: this.createEventId(container.ID, publicPort, privatePort),
 		}
-		this.RegistrarService.AddEvent(&e)
+		this.RegistryService.AddEvent(&e)
 	}
 	delete(this.containerIdPrivatePortMap, container.ID)
 	delete(this.containerIdPublicPortMap, container.ID)

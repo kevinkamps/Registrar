@@ -10,8 +10,8 @@ import (
 	"kevinkamps/registrar/provider/aws"
 	"kevinkamps/registrar/provider/ifconfig"
 	"kevinkamps/registrar/provider/local"
-	"kevinkamps/registrar/registrar"
-	"kevinkamps/registrar/registrar/consul"
+	"kevinkamps/registrar/registry"
+	"kevinkamps/registrar/registry/consul"
 	"sync"
 )
 
@@ -53,7 +53,7 @@ func main() {
 
 	var wg sync.WaitGroup
 
-	rs := registrar.NewRegistrarService(consulConfiguration, networkProviderConfiguration, ifconfigProviderConfiguration, awsProviderConfiguration)
+	rs := registry.NewRegistryService(consulConfiguration, networkProviderConfiguration, ifconfigProviderConfiguration, awsProviderConfiguration)
 	ms := monitor.NewMonitorService(rs, dockerConfiguration, staticConfiguration)
 
 	wg.Add(1)

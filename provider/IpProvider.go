@@ -1,6 +1,6 @@
 package provider
 
-import "kevinkamps/registrar/registrar/event"
+import "kevinkamps/registrar/registry/event"
 
 type IpProvider interface {
 	AddAddress(event *event.StartEvent)

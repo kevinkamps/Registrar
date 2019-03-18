@@ -1,4 +1,4 @@
-package registrar
+package registry
 
 import (
 	"kevinkamps/registrar/helper"
@@ -6,24 +6,24 @@ import (
 	"kevinkamps/registrar/provider/aws"
 	"kevinkamps/registrar/provider/ifconfig"
 	"kevinkamps/registrar/provider/local"
-	"kevinkamps/registrar/registrar/consul"
-	"kevinkamps/registrar/registrar/event"
+	"kevinkamps/registrar/registry/consul"
+	"kevinkamps/registrar/registry/event"
 	"log"
 	"sync"
 )
 
-type RegistrarService struct {
-	registrars                   []Registrar
+type RegistryService struct {
+	registries                   []Registry
 	ipProviders                  []provider.IpProvider
 	tagProviders                 []provider.TagProvider
 	networkProviderConfiguration *local.LocalNetworkProviderConfiguration
 }
 
-func NewRegistrarService(consulConfiguration *consul.Configuration,
+func NewRegistryService(consulConfiguration *consul.Configuration,
 	networkProviderConfiguration *local.LocalNetworkProviderConfiguration,
 	ifconfigProviderConfiguration *ifconfig.IfconfigProviderConfiguration,
-	awsProviderConfiguration *aws.AwsProviderConfiguration) *RegistrarService {
-	service := RegistrarService{}
+	awsProviderConfiguration *aws.AwsProviderConfiguration) *RegistryService {
+	service := RegistryService{}
 
 	service.networkProviderConfiguration = networkProviderConfiguration
 
@@ -31,8 +31,8 @@ func NewRegistrarService(consulConfiguration *consul.Configuration,
 	Registrars
 	*/
 	if *consulConfiguration.Enabled {
-		log.Println("Registrar enabled: Consul")
-		service.registrars = append(service.registrars, &consul.ConsulRegistrar{Configuration: consulConfiguration})
+		log.Println("Registry enabled: Consul")
+		service.registries = append(service.registries, &consul.ConsulRegistry{Configuration: consulConfiguration})
 	}
 
 	/**
@@ -62,20 +62,20 @@ func NewRegistrarService(consulConfiguration *consul.Configuration,
 	return &service
 }
 
-func (this *RegistrarService) Start() {
+func (this *RegistryService) Start() {
 	var wg sync.WaitGroup
-	for _, r := range this.registrars {
+	for _, r := range this.registries {
 		wg.Add(1)
-		go func(registrar Registrar) {
-			registrar.Start()
+		go func(registry Registry) {
+			registry.Start()
 			wg.Done()
 		}(r)
 	}
 	wg.Wait()
 }
 
-func (this *RegistrarService) AddEvent(e event.Event) {
-	for _, r := range this.registrars {
+func (this *RegistryService) AddEvent(e event.Event) {
+	for _, r := range this.registries {
 		if helper.IsInstanceOf(e, (*event.StartEvent)(nil)) {
 			this.ProcessIpProviders(e.(*event.StartEvent))
 			this.ProcessTagProviders(e.(*event.StartEvent))
@@ -84,13 +84,13 @@ func (this *RegistrarService) AddEvent(e event.Event) {
 	}
 }
 
-func (this *RegistrarService) ProcessIpProviders(e *event.StartEvent) {
+func (this *RegistryService) ProcessIpProviders(e *event.StartEvent) {
 	for _, ipProvider := range this.ipProviders {
 		ipProvider.AddAddress(e)
 	}
 }
 
-func (this *RegistrarService) ProcessTagProviders(e *event.StartEvent) {
+func (this *RegistryService) ProcessTagProviders(e *event.StartEvent) {
 	for _, tagProvider := range this.tagProviders {
 		tagProvider.AddTags(e)
 	}

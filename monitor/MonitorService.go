@@ -3,7 +3,7 @@ package monitor
 import (
 	"kevinkamps/registrar/monitor/docker"
 	"kevinkamps/registrar/monitor/static"
-	"kevinkamps/registrar/registrar"
+	"kevinkamps/registrar/registry"
 	"log"
 	"sync"
 )
@@ -12,7 +12,7 @@ type MonitorService struct {
 	monitors []Monitor
 }
 
-func NewMonitorService(registrarService *registrar.RegistrarService, dockerConfiguration *docker.Configuration, staticConfiguration *static.Configuration) *MonitorService {
+func NewMonitorService(registryService *registry.RegistryService, dockerConfiguration *docker.Configuration, staticConfiguration *static.Configuration) *MonitorService {
 	service := MonitorService{}
 
 	/**
@@ -21,15 +21,15 @@ func NewMonitorService(registrarService *registrar.RegistrarService, dockerConfi
 	if *dockerConfiguration.Enabled {
 		log.Println("Monitor enabled: Docker")
 		service.monitors = append(service.monitors, &docker.DockerMonitor{
-			RegistrarService: registrarService,
-			Configuration:    dockerConfiguration,
+			RegistryService: registryService,
+			Configuration:   dockerConfiguration,
 		})
 	}
 	if *staticConfiguration.Enabled {
 		log.Println("Monitor enabled: Static")
 		service.monitors = append(service.monitors, &static.StaticMonitor{
-			RegistrarService: registrarService,
-			Configuration:    staticConfiguration,
+			RegistryService: registryService,
+			Configuration:   staticConfiguration,
 		})
 	}
 

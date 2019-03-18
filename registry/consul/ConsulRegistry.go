@@ -4,20 +4,20 @@ import (
 	"fmt"
 	consulapi "github.com/hashicorp/consul/api"
 	"kevinkamps/registrar/helper"
-	"kevinkamps/registrar/registrar/event"
+	"kevinkamps/registrar/registry/event"
 	"log"
 	"sync"
 	"time"
 )
 
-type ConsulRegistrar struct {
+type ConsulRegistry struct {
 	events        chan event.Event
 	Configuration *Configuration
 	consulClient  *consulapi.Client
 	registrations map[string]*consulapi.AgentServiceRegistration
 }
 
-func (this *ConsulRegistrar) initConsulConnection() {
+func (this *ConsulRegistry) initConsulConnection() {
 	config := consulapi.DefaultConfig()
 
 	//TODO fix tsl connection
@@ -31,7 +31,7 @@ func (this *ConsulRegistrar) initConsulConnection() {
 	this.consulClient = client
 }
 
-func (this *ConsulRegistrar) initTtlChecks(wg *sync.WaitGroup) {
+func (this *ConsulRegistry) initTtlChecks(wg *sync.WaitGroup) {
 	wg.Add(1)
 	go func() {
 		sleep := time.Duration(*this.Configuration.Ttl) * time.Second / 2
@@ -51,7 +51,7 @@ func (this *ConsulRegistrar) initTtlChecks(wg *sync.WaitGroup) {
 	}()
 }
 
-func (this *ConsulRegistrar) Start() {
+func (this *ConsulRegistry) Start() {
 	this.registrations = make(map[string]*consulapi.AgentServiceRegistration)
 
 	var wg sync.WaitGroup
@@ -95,6 +95,6 @@ func (this *ConsulRegistrar) Start() {
 	wg.Wait()
 }
 
-func (this *ConsulRegistrar) AddEvent(e event.Event) {
+func (this *ConsulRegistry) AddEvent(e event.Event) {
 	this.events <- e
 }

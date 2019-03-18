@@ -2,7 +2,7 @@ package aws
 
 import (
 	"kevinkamps/registrar/provider"
-	"kevinkamps/registrar/registrar/event"
+	"kevinkamps/registrar/registry/event"
 	"log"
 )
 

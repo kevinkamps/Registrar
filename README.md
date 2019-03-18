@@ -12,12 +12,12 @@ I ended up with something that is easy to expand on and proved to be quite stabl
 with all of you. 
 
 ## Features
-The project consist out of three basic type of components. Monitors, Providers and Registrars.
+The project consist out of three basic type of components. Monitors, Providers and Registries.
 Monitors: Monitors for applications
 * Static config file
 * [Docker](https://www.docker.com/)
 
-Providers: Provides additional information before passing the applications found in the monitoring stage to the registrars.
+Providers: Provides additional information before passing the applications found in the monitoring stage to the registries.
 * Local network ip
 * WAN ip address
 * [AWS](https://aws.amazon.com/) ip address
@@ -32,7 +32,7 @@ Monitors for applications. Technically you could use multiple monitors at the sa
 * Docker monitor
 
 #### Static
-Monitors a static configuration file and checks if the applications is available and passing it to the registrars.
+Monitors a static configuration file and checks if the applications is available and passing it to the registries.
 
 The config file (by default `config.yml`) is using a yaml format. A example is provide below and should be self explanatory:
 ```yaml
@@ -90,8 +90,8 @@ provides the ip address of a specified network interface as the applications ip 
 
 
 
-### Registrars
-registers the discovered applications to one of the implementations below
+### registries
+registers the discovered applications to one of the implementations below.
 
 #### consul
 Consul Catalog (Registers to consul for service discovery usage) 
@@ -104,7 +104,7 @@ Usage:
   -monitor-docker-api-version string
         Version of the api to use
   -monitor-docker-enabled
-        Enables the docker monitor (default true)
+        Enables the docker monitor
   -monitor-docker-event-buffer-size int
         Max number of events to be buffered (default 1024)
   -monitor-docker-host string
@@ -131,17 +131,17 @@ Usage:
         Has president over network-provider-use-ipv6 (default true)
   -provider-local-network-use-ipv6
         Can only be used if network-provider-use-ipv4 is set to false
-  -registrar-consul-check-deregister-after int
+  -registry-consul-check-deregister-after int
         deregister in seconds (default 60)
-  -registrar-consul-check-ttl int
+  -registry-consul-check-ttl int
         Ttl in seconds (default 10)
-  -registrar-consul-enabled
+  -registry-consul-enabled
         Enables registration to consul
-  -registrar-consul-event-buffer-size int
+  -registry-consul-event-buffer-size int
         Max number of events to be buffered (default 1024)
-  -registrar-consul-log-ttl-passes-enabled
+  -registry-consul-log-ttl-passes-enabled
         Logging of ttl passes are enabled if set to true
-  -registrar-consul-url string
+  -registry-consul-url string
         Consul address (default "http://127.0.0.1:8500")
 ```
 
@@ -160,7 +160,7 @@ docker run -d \
     --net=host \
     --volume=/var/run/docker.sock:/tmp/docker.sock \
     register.kevinkamps.nl/servicediscovery/registrar:latest \
-      -monitor-docker-enabled=true -provider-network-ip-enabled=true -provider-network-interface-name=eth0 -registrar-consul-enabled=true -registrar-consul-url=http://127.0.0.1:8500 
+      -monitor-docker-enabled=true -provider-local-network-ip-enabled=true -provider-local-network-interface-name=eth0 -registries-consul-enabled=true -registries-consul-url=http://127.0.0.1:8500 
 ```
 
 ### Docker compose example:
@@ -181,7 +181,7 @@ services:
     network_mode: host
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: -monitor-docker-enabled=true -provider-network-ip-enabled=true -provider-network-interface-name=eth0 -registrar-consul-enabled=true -registrar-consul-url=http://127.0.0.1:8500
+    command: -monitor-docker-enabled=true -provider-local-network-ip-enabled=true -provider-local-network-interface-name=eth0 -registries-consul-enabled=true -registries-consul-url=http://127.0.0.1:8500
 ```
 
 ## Future ideas / plans
