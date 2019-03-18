@@ -1,0 +1,30 @@
+version: '2'
+services:
+  web1:
+    image: "httpd:latest"
+    ports:
+    - "8881:80"
+    labels:
+      REGISTRAR_NAME: "web1"
+
+  web2:
+    image: "httpd:latest"
+    ports:
+    - "8882:80"
+    - "8883:80"
+    - "8884:80"
+    labels:
+      REGISTRAR_NAME: "web2"
+
+  web3:
+    image: "httpd:latest"
+    ports:
+    - "8885:80"
+    - "8886:81"
+    - "8887:443"
+    labels:
+      REGISTRAR_NAME: "web3"
+      REGISTRAR_81_IGNORE: "true"
+      REGISTRAR_443_NAME: "web3.1"
+      REGISTRAR_TAG_my_tag: "Some value"
+

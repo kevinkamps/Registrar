@@ -1,0 +1,7 @@
+version: '2'
+services:
+  registrarConsul:
+    image: "consul:1.3.0"
+    ports:
+    - "8500:8500"
+    command: "agent -server -bootstrap -ui -client=0.0.0.0"

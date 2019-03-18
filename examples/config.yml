@@ -1,0 +1,10 @@
+applications:
+- {
+  name: "app2",
+  port: 8500,
+  protocol: "tcp", # tcp|udp
+  tags: {
+    tag1: value1,
+    tag2: value2
+  }
+}
