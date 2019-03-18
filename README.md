@@ -193,4 +193,4 @@ GO mods must be enabled for this project before you can build it.
 
 ## License
 
-[GPL-3.0(https://choosealicense.com/licenses/gpl-3.0/)
+[GPL-3.0](https://choosealicense.com/licenses/gpl-3.0/)
