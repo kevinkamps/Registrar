@@ -119,6 +119,8 @@ Usage:
         A path to the static config file (default "./config.yml")
   -monitor-static-enabled
         Enables the static monitor. Only read the config file at startup.
+  -monitor-static-log-checks-enabled
+        Logging layer 3 checks
   -provider-aws-ip-enabled
         Enables the aws provider for ip
   -provider-aws-tags-enabled
