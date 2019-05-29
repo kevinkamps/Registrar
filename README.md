@@ -67,7 +67,7 @@ are prefixed with "REGISTRAR_" that would indicate that these labels are related
 
 Docker labels options:
  * `REGISTRAR_NAME`: "< name >". Name of the service to register
- * `REGISTRAR_INGORE`: "< true|false >". If set to true all services will be ignored.
+ * `REGISTRAR_IGNORE`: "< true|false >". If set to true all services will be ignored.
  * `REGISTRAR_TAG_< name_of_the_tag >`: "< value of the tag >". Adds a tag can are used while registrating the application
  * `REGISTRAR_< private_port >_NAME`: "< name >". Name of the service to register
  * `REGISTRAR_< private_port >_IGNORE`: "< true|false >" If set to true this services will be ignored. If set to false it will not be ignored even if `REGISTRAR_INGORE` is set to true.
