@@ -23,6 +23,7 @@ func (this *ConsulRegistry) initConsulConnection() {
 	//TODO fix tsl connection
 
 	config.Address = this.Configuration.Url.Host
+	config.Scheme = this.Configuration.Url.Scheme
 	client, err := consulapi.NewClient(config)
 	if err != nil {
 		log.Fatal("Registry - Consul: ", this.Configuration.Url.Scheme)
