@@ -1,7 +1,7 @@
 version: '2'
 services:
   registrar:
-    image: keivnkamps/registrar:latest
+    image: kevinkamps/registrar:latest
     network_mode: host
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
