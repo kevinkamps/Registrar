@@ -24,6 +24,7 @@ func (this *ConsulRegistry) initConsulConnection() {
 
 	config.Address = this.Configuration.Url.Host
 	config.Scheme = this.Configuration.Url.Scheme
+	log.Println(fmt.Sprintf("Registry - Consul: Connecting to: %s ", this.Configuration.Url))
 	client, err := consulapi.NewClient(config)
 	if err != nil {
 		log.Fatal("Registry - Consul: ", this.Configuration.Url.Scheme)
@@ -84,12 +85,19 @@ func (this *ConsulRegistry) Start() {
 			registration.Check.DeregisterCriticalServiceAfter = fmt.Sprintf("%ds", *this.Configuration.DeregisterCriticalServiceAfter)
 
 			this.registrations[registration.ID] = registration
-			this.consulClient.Agent().ServiceRegister(registration)
+			err := this.consulClient.Agent().ServiceRegister(registration)
+			if err != nil {
+				log.Println("Registry - Consul: Error registering service: ", err)
+			}
+
 		} else if helper.IsInstanceOf(e, (*event.EndEvent)(nil)) {
 			endEvent := e.(*event.EndEvent)
 			log.Println("Registry - Consul: end event: ", endEvent)
 			delete(this.registrations, endEvent.Id)
-			this.consulClient.Agent().ServiceDeregister(endEvent.Id)
+			err := this.consulClient.Agent().ServiceDeregister(endEvent.Id)
+			if err != nil {
+				log.Println("Registry - Consul: Error registering service: ", err)
+			}
 		}
 	}
 
