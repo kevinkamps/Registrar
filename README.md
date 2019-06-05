@@ -164,7 +164,7 @@ docker run -d \
     --net=host \
     --volume=/var/run/docker.sock:/tmp/docker.sock \
     kevinkamps/registrar:latest \
-      -monitor-docker-enabled=true -provider-local-network-ip-enabled=true -provider-local-network-interface-name=eth0 -registries-consul-enabled=true -registries-consul-url=http://127.0.0.1:8500 
+      -monitor-docker-enabled=true -provider-local-network-ip-enabled=true -provider-local-network-interface-name=eth0 -registry-consul-enabled=true -registry-consul-url=http://127.0.0.1:8500 
 ```
 
 ### Docker compose example:
@@ -185,7 +185,7 @@ services:
     network_mode: host
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: -monitor-docker-enabled=true -provider-local-network-ip-enabled=true -provider-local-network-interface-name=eth0 -registries-consul-enabled=true -registries-consul-url=http://127.0.0.1:8500
+    command: -monitor-docker-enabled=true -provider-local-network-ip-enabled=true -provider-local-network-interface-name=eth0 -registry-consul-enabled=true -registry-consul-url=http://127.0.0.1:8500
 ```
 
 ## Future ideas / plans
