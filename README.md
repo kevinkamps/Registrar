@@ -4,7 +4,7 @@ is a service discovery tool called [Consul](https://www.consul.io/). The Registr
 reading from a static config file. It can use providers (AWS, WAN and local network) to resolve ips or provide additional tags when the application or service registrates.
 
 ## Project background
-This project took a lot if inspiration from [Gliderlabs registrator](https://github.com/gliderlabs/registrator). 
+This project took a lot of inspiration from [Gliderlabs registrator](https://github.com/gliderlabs/registrator). 
 I originally used it but found it to be lacking in resolving ips automatically in a cloud based environment. I could have added this functionality to that software but i
 always wanted to learn GO and decided to give it a go (pun intended). My goal was to write something that i could use on my own personal servers 
 as well as for a large customers i work for in a constantly changing high available AWS cloud environment. Also i wanted it to be more flexible than the original project.
