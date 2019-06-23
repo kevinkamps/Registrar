@@ -54,7 +54,7 @@ applications:
 }
 ```
 
-Please not that instead of setting the ip yourself it can be automatically resolved by any of the ip providers available.
+Please note that instead of setting the ip yourself it can be automatically resolved by any of the ip providers available.
 
 Watching the config file for changes at runtime has not been implemented yet. So if you make changes to your config file please restart the Registrar. This feature will be added in the future.
 
