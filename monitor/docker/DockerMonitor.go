@@ -1,6 +1,7 @@
 package docker
 
 import (
+	"bufio"
 	"fmt"
 	dockerapi "github.com/fsouza/go-dockerclient"
 	"kevinkamps/registrar/registry"
@@ -10,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 )
 
 type DockerMonitor struct {
@@ -18,20 +20,32 @@ type DockerMonitor struct {
 	dockerApi                 *dockerapi.Client
 	containerIdPrivatePortMap map[string][]int
 	containerIdPublicPortMap  map[string][]int
+	rwLock                    sync.RWMutex
+	registrarContainerId      string
+	registrarContainerStarted time.Time
 }
 
 func (this *DockerMonitor) registerAllCurrentRunningContainers() {
+	this.rwLock.Lock()
+	this.containerIdPrivatePortMap = make(map[string][]int)
+	this.containerIdPublicPortMap = make(map[string][]int)
+	this.rwLock.Unlock()
+
 	containers, err := this.dockerApi.ListContainers(dockerapi.ListContainersOptions{All: true})
 	assert(err)
 
 	for _, container := range containers {
 		containerInfo, err := this.dockerApi.InspectContainer(container.ID)
 		assert(err)
-		this.containerStarted(containerInfo)
+
+		if containerInfo.State.Running {
+			this.containerStarted(containerInfo)
+		}
 	}
 }
 
 func (this *DockerMonitor) containerStarted(container *dockerapi.Container) {
+	log.Println(fmt.Sprintf("Monitor - Docker: Start container detected. Container id: %s", container.ID))
 	isNetworkHostMode := false
 	if len(container.NetworkSettings.Networks) > 0 {
 		if _, ok := container.NetworkSettings.Networks["host"]; ok {
@@ -76,14 +90,18 @@ func (this *DockerMonitor) registerContainer(container *dockerapi.Container, pri
 			break
 		}
 
+		this.rwLock.Lock()
 		this.containerIdPrivatePortMap[container.ID] = append(this.containerIdPrivatePortMap[container.ID], privatePort)
 		this.containerIdPublicPortMap[container.ID] = append(this.containerIdPublicPortMap[container.ID], publicPort)
+		this.rwLock.Unlock()
 		this.RegistryService.AddEvent(e)
 	} else {
-		log.Println("Monitor - Docker: Registration skipped because ignore flag was set")
+		log.Println(fmt.Sprintf("Monitor - Docker: Registration skipped because ignore flag was set. Container id: %s", container.ID))
 	}
 }
 func (this *DockerMonitor) containerStopped(container *dockerapi.Container) {
+	log.Println(fmt.Sprintf("Monitor - Docker: Stopping container detected. Container id: %s", container.ID))
+	this.rwLock.Lock()
 	for i := range this.containerIdPrivatePortMap[container.ID] {
 		privatePort := this.containerIdPrivatePortMap[container.ID][i]
 		publicPort := this.containerIdPublicPortMap[container.ID][i]
@@ -94,12 +112,11 @@ func (this *DockerMonitor) containerStopped(container *dockerapi.Container) {
 	}
 	delete(this.containerIdPrivatePortMap, container.ID)
 	delete(this.containerIdPublicPortMap, container.ID)
+
+	this.rwLock.Unlock()
 }
 
 func (this *DockerMonitor) Start() {
-	this.containerIdPrivatePortMap = make(map[string][]int)
-	this.containerIdPublicPortMap = make(map[string][]int)
-
 	var wg sync.WaitGroup
 	os.Setenv("DOCKER_HOST", *this.Configuration.host)
 	os.Setenv("DOCKER_API_VERSION", *this.Configuration.version)
@@ -115,6 +132,8 @@ func (this *DockerMonitor) Start() {
 
 	this.registerAllCurrentRunningContainers()
 
+	this.startWatchingForContainerRestarts(wg)
+
 	wg.Add(1)
 	go func() {
 		for event := range events {
@@ -128,8 +147,10 @@ func (this *DockerMonitor) Start() {
 				assert(err)
 				this.containerStopped(container)
 			}
+
 		}
 	}()
+
 	wg.Wait()
 }
 
@@ -177,6 +198,53 @@ func (this *DockerMonitor) sanatizeLabels(labels map[string]string, port int) ma
 	return labelsToKeep
 }
 
+func (this *DockerMonitor) startWatchingForContainerRestarts(wg sync.WaitGroup) {
+
+	//Finding container id from cgroup list. This only works when the registrar is running inside a container
+	f, err := os.Open("/proc/self/cgroup")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+	scanner := bufio.NewScanner(f)
+
+	prefix := "1:name=systemd:/docker/"
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.HasPrefix(line, prefix) {
+			this.registrarContainerId = line[len(prefix):len(line)]
+			break
+		}
+	}
+
+	wg.Add(1)
+	go func() {
+		sleep := time.Duration(10) * time.Second / 2
+
+		log.Println(fmt.Sprintf("Monitor - Docker: Started monitoring every %s seconds for restarts", sleep))
+		for {
+			if this.registrarContainerId != "" {
+				container, err := this.dockerApi.InspectContainer(this.registrarContainerId)
+				assert(err)
+
+				if this.registrarContainerStarted.IsZero() {
+					this.registrarContainerStarted = container.State.StartedAt
+				} else {
+					if container.State.StartedAt != this.registrarContainerStarted {
+						log.Println("Monitor - Docker: Registrar container restart detected.")
+						log.Println("Monitor - Docker: Rebuilding container index.")
+						this.registrarContainerStarted = container.State.StartedAt
+						this.registerAllCurrentRunningContainers()
+					}
+				}
+			}
+			time.Sleep(sleep)
+		}
+
+		log.Println("Monitor - Docker: Stopped monitoring for restarts")
+		wg.Done()
+	}()
+}
 func assert(err error) {
 	if err != nil {
 		log.Fatal(err)
