@@ -219,11 +219,10 @@ func (this *DockerMonitor) startWatchingForContainerRestarts(wg sync.WaitGroup) 
 
 	wg.Add(1)
 	go func() {
-		sleep := time.Duration(10) * time.Second / 2
-
-		log.Println(fmt.Sprintf("Monitor - Docker: Started monitoring every %s seconds for restarts", sleep))
-		for {
-			if this.registrarContainerId != "" {
+		sleep := time.Duration(10) * time.Second
+		if this.registrarContainerId != "" {
+			log.Println(fmt.Sprintf("Monitor - Docker: Started monitoring every %s seconds for restarts", sleep))
+			for {
 				container, err := this.dockerApi.InspectContainer(this.registrarContainerId)
 				assert(err)
 
@@ -237,11 +236,10 @@ func (this *DockerMonitor) startWatchingForContainerRestarts(wg sync.WaitGroup) 
 						this.registerAllCurrentRunningContainers()
 					}
 				}
+				time.Sleep(sleep)
 			}
-			time.Sleep(sleep)
+			log.Println("Monitor - Docker: Stopped monitoring for restarts")
 		}
-
-		log.Println("Monitor - Docker: Stopped monitoring for restarts")
 		wg.Done()
 	}()
 }
