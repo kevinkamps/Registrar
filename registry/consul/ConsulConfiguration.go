@@ -13,6 +13,7 @@ type Configuration struct {
 	Ttl                            *int
 	DeregisterCriticalServiceAfter *int
 	EventsBufferSize               *int
+	Datacenter                     *string
 }
 
 func NewConsulConfiguration() *Configuration {
@@ -24,6 +25,7 @@ func NewConsulConfiguration() *Configuration {
 	config.DeregisterCriticalServiceAfter = flag.Int("registry-consul-check-deregister-after", 60, "deregister in seconds")
 	config.EventsBufferSize = flag.Int("registry-consul-event-buffer-size", 1024, "Max number of events to be buffered")
 	config.LogTtlPassesEnabled = flag.Bool("registry-consul-log-ttl-passes-enabled", false, "Logging of ttl passes are enabled if set to true")
+	config.Datacenter = flag.String("registry-consul-datacenter", "dc1", "Consul datacenter")
 
 	return &config
 }

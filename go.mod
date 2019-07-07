@@ -1,6 +1,7 @@
 module kevinkamps/registrar
 
 require (
+	github.com/davecgh/go-spew v1.1.1
 	github.com/docker/distribution v2.7.1+incompatible
 	github.com/docker/docker v0.7.3-0.20180827131323-0c5f8d2b9b23
 	github.com/docker/libtrust v0.0.0-20160708172513-aabc10ec26b7
