@@ -134,12 +134,27 @@ func (this *DockerMonitor) Start() {
 }
 
 func (this *DockerMonitor) skipRegistration(labels map[string]string, port int) bool {
-	if value, ok := labels[fmt.Sprintf("REGISTRAR_%d_IGNORE", port)]; ok {
-		return value == "true"
+	if *this.Configuration.DefaultIgnoreEnabled {
+		if value, ok := labels[fmt.Sprintf("REGISTRAR_%d_IGNORE", port)]; ok {
+			if value == "false" {
+				return false
+			}
+		}
+		if value, ok := labels["REGISTRAR_IGNORE"]; ok {
+			if value == "false" {
+				return false
+			}
+		}
+		return true
+	} else {
+		if value, ok := labels[fmt.Sprintf("REGISTRAR_%d_IGNORE", port)]; ok {
+			return value == "true"
+		}
+		if value, ok := labels["REGISTRAR_IGNORE"]; ok {
+			return value == "true"
+		}
 	}
-	if value, ok := labels["REGISTRAR_IGNORE"]; ok {
-		return value == "true"
-	}
+
 	return false
 }
 
