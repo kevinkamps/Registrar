@@ -3,14 +3,6 @@ Registrar automatically registers and deregisters applications or services to a 
 is a service discovery tool called [Consul](https://www.consul.io/). The Registrar can listen for docker containers starting and stopping as well as
 reading from a static config file. It can use providers (AWS, WAN and local network) to resolve ips or provide additional tags when the application or service registrates.
 
-## Project background
-This project took a lot of inspiration from [Gliderlabs registrator](https://github.com/gliderlabs/registrator). 
-I originally used it but found it to be lacking in resolving ips automatically in a cloud based environment. I could have added this functionality to that software but i
-always wanted to learn GO and decided to give it a go (pun intended). My goal was to write something that i could use on my own personal servers 
-as well as for a large customers i work for in a constantly changing high available AWS cloud environment. Also i wanted it to be more flexible than the original project.
-I ended up with something that is easy to expand on and proved to be quite stable with a very low memory profile. So i decided to make it open source and share it
-with all of you. 
-
 ## Features
 The project consist out of three basic type of components. Monitors, Providers and Registries.
 
@@ -72,7 +64,8 @@ Docker labels options:
  * `REGISTRAR_< private_port >_NAME`: "< name >". Name of the service to register
  * `REGISTRAR_< private_port >_IGNORE`: "< true|false >" If set to true this services will be ignored. If set to false it will not be ignored even if `REGISTRAR_IGNORE` is set to true.
  * `REGISTRAR_< private_port >_TAG_< name_of_the_tag >`: "< value of the tag >". Adds a tag like `REGISTRAR_TAG_< name of the tag >` but will only add it the the specified port.
-
+ 
+By default every container found will be registrated unless `REGISTRAR_IGNORE` or `REGISTRAR_< private_port >_IGNORE` have been set to `true`. If you want to have the default that all services will be ignored unless `REGISTRAR_IGNORE` or `REGISTRAR_< private_port >_IGNORE` have been set to `false` then start the registrar with the option `-monitor-docker-default-ignore=false`
 
 
 ### Providers
@@ -105,6 +98,8 @@ Registers the discovered applications to one of the implementations below.
 Usage:
   -monitor-docker-api-version string
         Version of the api to use
+  -monitor-docker-default-ignore
+        Ignores by default everything unless REGISTRATOR_IGNORE or REGISTRATOR_<port>_IGNORE is explicitly set to false. This inverts the default behaviour, which is registrating everything unless the ignore flags are set to true
   -monitor-docker-enabled
         Enables the docker monitor
   -monitor-docker-event-buffer-size int
@@ -139,6 +134,8 @@ Usage:
         deregister in seconds (default 60)
   -registry-consul-check-ttl int
         Ttl in seconds (default 10)
+  -registry-consul-datacenter string
+        Consul datacenter (default "dc1")
   -registry-consul-enabled
         Enables registration to consul
   -registry-consul-event-buffer-size int
@@ -193,11 +190,18 @@ services:
 * Add public ips to aws provider
 * Add more registries
 
-
 ## Development notes
 GO mods must be enabled for this project before you can build it.
 * Terminal: `export GO111MODULE=on`
 * Intellij: Settings -> Language & Frameworks -> Go -> Go modules -> Enable Go Modules
+
+## Project background
+This project took a lot of inspiration from [Gliderlabs registrator](https://github.com/gliderlabs/registrator). 
+I originally used it but found it to be lacking in resolving ips automatically in a cloud based environment. I could have added this functionality to that software but i
+always wanted to learn GO and decided to give it a go (pun intended). My goal was to write something that i could use on my own personal servers 
+as well as for a large customers i work for in a constantly changing high available AWS cloud environment. Also i wanted it to be more flexible than the original project.
+I ended up with something that is easy to expand on and proved to be quite stable with a very low memory profile. So i decided to make it open source and share it
+with all of you. 
 
 ## License
 
