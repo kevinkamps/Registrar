@@ -22,6 +22,7 @@ func (this *ConsulRegistry) initConsulConnection() {
 
 	//TODO fix tsl connection
 
+	config.Datacenter = *this.Configuration.Datacenter
 	config.Address = this.Configuration.Url.Host
 	config.Scheme = this.Configuration.Url.Scheme
 	log.Println(fmt.Sprintf("Registry - Consul: Connecting to: %s ", this.Configuration.Url))

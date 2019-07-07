@@ -1,6 +1,8 @@
 package registry
 
 import (
+	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"kevinkamps/registrar/helper"
 	"kevinkamps/registrar/provider"
 	"kevinkamps/registrar/provider/aws"
@@ -32,6 +34,7 @@ func NewRegistryService(consulConfiguration *consul.Configuration,
 	*/
 	if *consulConfiguration.Enabled {
 		log.Println("Registry enabled: Consul")
+		log.Println(fmt.Sprintf("Registry enabled: Consul. with config: %s", spew.Sdump(consulConfiguration)))
 		service.registries = append(service.registries, &consul.ConsulRegistry{Configuration: consulConfiguration})
 	}
 
@@ -39,16 +42,18 @@ func NewRegistryService(consulConfiguration *consul.Configuration,
 	Ip providers
 	*/
 	if *networkProviderConfiguration.IpProviderEnabled {
-		log.Println("IP Provider enabled: Local network")
+		log.Println(fmt.Sprintf("IP Provider enabled: Local network. with config: %s", spew.Sdump(networkProviderConfiguration)))
 		service.ipProviders = append(service.ipProviders, local.NewLocalNetworkProvider(networkProviderConfiguration))
 	}
 	if *ifconfigProviderConfiguration.IpProviderEnabled {
 		log.Println("IP Provider enabled: Ifconfig.co")
+		log.Println(fmt.Sprintf("IP Provider enabled: Ifconfig.co. with config: %s", spew.Sdump(ifconfigProviderConfiguration)))
 		service.ipProviders = append(service.ipProviders, ifconfig.NewIfconfigProvider())
 	}
 
 	if *awsProviderConfiguration.IpProviderEnabled {
 		log.Println("IP Provider enabled: AWS")
+		log.Println(fmt.Sprintf("IP Provider enabled: AWS. with config: %s", spew.Sdump(awsProviderConfiguration)))
 		service.ipProviders = append(service.ipProviders, aws.NewAwsProvider())
 	}
 
@@ -57,6 +62,7 @@ func NewRegistryService(consulConfiguration *consul.Configuration,
 	*/
 	if *awsProviderConfiguration.TagProviderEnabled {
 		log.Println("Tag Provider enabled: AWS")
+		log.Println(fmt.Sprintf("Tag Provider enabled: AWS. with config: %s", spew.Sdump(awsProviderConfiguration)))
 		service.tagProviders = append(service.tagProviders, aws.NewAwsProvider())
 	}
 	return &service

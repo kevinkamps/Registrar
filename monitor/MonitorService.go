@@ -1,6 +1,8 @@
 package monitor
 
 import (
+	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"kevinkamps/registrar/monitor/docker"
 	"kevinkamps/registrar/monitor/static"
 	"kevinkamps/registrar/registry"
@@ -19,14 +21,14 @@ func NewMonitorService(registryService *registry.RegistryService, dockerConfigur
 	Monitors
 	*/
 	if *dockerConfiguration.Enabled {
-		log.Println("Monitor enabled: Docker")
+		log.Println(fmt.Sprintf("Monitor enabled: Docker. With config: %s", spew.Sdump(dockerConfiguration)))
 		service.monitors = append(service.monitors, &docker.DockerMonitor{
 			RegistryService: registryService,
 			Configuration:   dockerConfiguration,
 		})
 	}
 	if *staticConfiguration.Enabled {
-		log.Println("Monitor enabled: Static")
+		log.Println(fmt.Sprintf("Monitor enabled: Static. with config: %s", spew.Sdump(staticConfiguration)))
 		service.monitors = append(service.monitors, &static.StaticMonitor{
 			RegistryService: registryService,
 			Configuration:   staticConfiguration,

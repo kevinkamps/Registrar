@@ -27,11 +27,15 @@ func (this *DockerMonitor) registerAllCurrentRunningContainers() {
 	for _, container := range containers {
 		containerInfo, err := this.dockerApi.InspectContainer(container.ID)
 		assert(err)
-		this.containerStarted(containerInfo)
+
+		if containerInfo.State.Running {
+			this.containerStarted(containerInfo)
+		}
 	}
 }
 
 func (this *DockerMonitor) containerStarted(container *dockerapi.Container) {
+	log.Println(fmt.Sprintf("Monitor - Docker: Starting container detected. Container id: %s", container.ID))
 	isNetworkHostMode := false
 	if len(container.NetworkSettings.Networks) > 0 {
 		if _, ok := container.NetworkSettings.Networks["host"]; ok {
@@ -80,10 +84,11 @@ func (this *DockerMonitor) registerContainer(container *dockerapi.Container, pri
 		this.containerIdPublicPortMap[container.ID] = append(this.containerIdPublicPortMap[container.ID], publicPort)
 		this.RegistryService.AddEvent(e)
 	} else {
-		log.Println("Monitor - Docker: Registration skipped because ignore flag was set")
+		log.Println(fmt.Sprintf("Monitor - Docker: Registration skipped because ignore flag was set. Container id: %s", container.ID))
 	}
 }
 func (this *DockerMonitor) containerStopped(container *dockerapi.Container) {
+	log.Println(fmt.Sprintf("Monitor - Docker: Stopping container detected. Container id: %s", container.ID))
 	for i := range this.containerIdPrivatePortMap[container.ID] {
 		privatePort := this.containerIdPrivatePortMap[container.ID][i]
 		publicPort := this.containerIdPublicPortMap[container.ID][i]
@@ -134,12 +139,27 @@ func (this *DockerMonitor) Start() {
 }
 
 func (this *DockerMonitor) skipRegistration(labels map[string]string, port int) bool {
-	if value, ok := labels[fmt.Sprintf("REGISTRAR_%d_IGNORE", port)]; ok {
-		return value == "true"
+	if *this.Configuration.DefaultIgnoreEnabled {
+		if value, ok := labels[fmt.Sprintf("REGISTRAR_%d_IGNORE", port)]; ok {
+			if value == "false" {
+				return false
+			}
+		}
+		if value, ok := labels["REGISTRAR_IGNORE"]; ok {
+			if value == "false" {
+				return false
+			}
+		}
+		return true
+	} else {
+		if value, ok := labels[fmt.Sprintf("REGISTRAR_%d_IGNORE", port)]; ok {
+			return value == "true"
+		}
+		if value, ok := labels["REGISTRAR_IGNORE"]; ok {
+			return value == "true"
+		}
 	}
-	if value, ok := labels["REGISTRAR_IGNORE"]; ok {
-		return value == "true"
-	}
+
 	return false
 }
 
