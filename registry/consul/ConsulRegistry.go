@@ -25,6 +25,8 @@ func (this *ConsulRegistry) initConsulConnection() {
 	config.Datacenter = *this.Configuration.Datacenter
 	config.Address = this.Configuration.Url.Host
 	config.Scheme = this.Configuration.Url.Scheme
+	config.Token = *this.Configuration.Token
+
 	log.Println(fmt.Sprintf("Registry - Consul: Connecting to: %s ", this.Configuration.Url))
 	client, err := consulapi.NewClient(config)
 	if err != nil {

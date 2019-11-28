@@ -142,6 +142,8 @@ Usage:
         Max number of events to be buffered (default 1024)
   -registry-consul-log-ttl-passes-enabled
         Logging of ttl passes are enabled if set to true
+  -registry-consul-token string
+        Token is used to provide a per-request ACL token
   -registry-consul-url string
         Consul address (default "http://127.0.0.1:8500")
 ```
