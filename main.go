@@ -12,8 +12,11 @@ import (
 	"kevinkamps/registrar/provider/local"
 	"kevinkamps/registrar/registry"
 	"kevinkamps/registrar/registry/consul"
+	"os"
 	"sync"
 )
+
+var version string
 
 func main() {
 
@@ -46,7 +49,12 @@ func main() {
 	consulConfiguration := consul.NewConsulConfiguration()
 	configurations = append(configurations, consulConfiguration)
 
+	showVersion := flag.Bool("version", false, "Prints the version of the application and exits")
 	flag.Parse()
+	if *showVersion {
+		fmt.Println(version)
+		os.Exit(0)
+	}
 	for _, configuration := range configurations {
 		configuration.Parse()
 	}
