@@ -146,6 +146,8 @@ Usage:
         Token is used to provide a per-request ACL token
   -registry-consul-url string
         Consul address (default "http://127.0.0.1:8500")
+  -version
+        Prints the version of the application and exits
 ```
 
 ## Running as Docker container
