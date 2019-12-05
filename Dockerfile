@@ -3,6 +3,7 @@ RUN export GO111MODULE=on
 RUN mkdir -p /app
 WORKDIR /app
 COPY . ./
+RUN env
 RUN GOOS=linux GOARCH=amd64 go build -ldflags "-X main.version=$SOURCE_BRANCH" -o /app/registrar_linux_amd64 ./main.go
 
 
