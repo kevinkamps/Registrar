@@ -150,15 +150,28 @@ Usage:
         Prints the version of the application and exits
 ```
 
-## Running as Docker container
-### Commandline example (showing help)
+## Usage
+### Running as Docker container
+
+#### showing help
+**Commandline example:**
 ```bash
 docker run -d \
     --name=registrar \
     kevinkamps/registrar:latest \
       -help
 ```
-### Commandline example (monitoring docker containers and registering them with consul. Registering them with the network interface ip):
+**Docker compose example:**
+```yaml
+version: '2'
+services:
+  registrar:
+    image: kevinkamps/registrar:latest
+    command: -help
+```
+
+#### Monitoring docker containers and registering them with consul using the network interface ip
+**Commandline example:**
 ```bash
 docker run -d \
     --name=registrar \
@@ -168,16 +181,7 @@ docker run -d \
       -monitor-docker-enabled=true -provider-local-network-ip-enabled=true -provider-local-network-interface-name=eth0 -registry-consul-enabled=true -registry-consul-url=http://127.0.0.1:8500 
 ```
 
-### Docker compose example:
-```yaml
-version: '2'
-services:
-  registrar:
-    image: kevinkamps/registrar:latest
-    command: -help
-```
-
-### Docker compose example (monitoring docker containers and registering them with consul. Registering them with the network interface ip):
+**Docker compose example:**
 ```yaml
 version: '2'
 services:
@@ -201,10 +205,11 @@ GO mods must be enabled for this project before you can build it.
 
 ## Project background
 This project took a lot of inspiration from [Gliderlabs registrator](https://github.com/gliderlabs/registrator). 
-I originally used it but found it to be lacking in resolving ips automatically in a cloud based environment. I could have added this functionality to that software but i
-always wanted to learn GO and decided to give it a go (pun intended). My goal was to write something that i could use on my own personal servers 
-as well as for a large customers i work for in a constantly changing high available AWS cloud environment. Also i wanted it to be more flexible than the original project.
-I ended up with something that is easy to expand on and proved to be quite stable with a very low memory profile. So i decided to make it open source and share it
+I originally used it but found it to be lacking in resolving ips automatically in a cloud based environment, and just not doing exactly what 
+i needed it to do.I could have added this functionality to that project but i always wanted to learn GO and decided to give it a go (pun intended). 
+My goal was to write something that i could use on my own personal servers as well as for a large customers i work for in a constantly 
+changing high available AWS cloud environment. Also i wanted it to be more flexible than the original project. I ended up with something 
+that is easy to expand on and proved to be quite stable with a very low memory profile. So i decided to make it open source and share it
 with all of you. 
 
 ## License
