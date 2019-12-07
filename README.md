@@ -1,7 +1,8 @@
 # Registrar
 Registrar automatically registers and deregisters applications or services to a registry. The only registry that is currently supported 
-is a service discovery tool called [Consul](https://www.consul.io/). The Registrar can listen for docker containers starting and stopping as well as
-reading from a static config file. It can use providers (AWS, WAN and local network) to resolve ips or provide additional tags when the application or service registrates.
+is a service discovery tool called [Consul](https://www.consul.io/). The Registrar can connect with Docker as well as reading from a static 
+config file. It can use providers (AWS, WAN and local network) to resolve ips or provide additional tags when the application or service 
+registrates.
 
 ## Features
 The project consist out of three basic type of components. Monitors, Providers and Registries.
@@ -206,11 +207,11 @@ GO mods must be enabled for this project before you can build it.
 ## Project background
 This project took a lot of inspiration from [Gliderlabs registrator](https://github.com/gliderlabs/registrator). 
 I originally used it but found it to be lacking in resolving ips automatically in a cloud based environment, and just not doing exactly what 
-i needed it to do.I could have added this functionality to that project but i always wanted to learn GO and decided to give it a go (pun intended). 
-My goal was to write something that i could use on my own personal servers as well as for a large customers i work for in a constantly 
-changing high available AWS cloud environment. Also i wanted it to be more flexible than the original project. I ended up with something 
-that is easy to expand on and proved to be quite stable with a very low memory profile. So i decided to make it open source and share it
-with all of you. 
+i needed it to do. I could have added the functionality to that project but i found it lacking in flexibility to add new features easily, 
+also i always wanted to explore GO as a programming language so i decided to create this project. My goal was to write something that i could 
+use on my own personal servers as well as for a large customers i work for in a constantly changing high available AWS cloud environment. 
+Also i wanted it to be more flexible than the original project. I ended up with something that is very easy to expand and proved to be quite 
+stable with a very low memory profile. So i decided to make it open source and share it with all of you. 
 
 ## License
 
