@@ -21,13 +21,16 @@ GOOS=linux GOARCH=arm go build -ldflags "-X main.version=$VERSION" -o ./bin/regi
 
 echo "$(date): Building container"
 docker build -t kevinkamps/registrar:$VERSION .
+docker tag kevinkamps/registrar:$VERSION kevinkamps/registrar:latest
+
 
 echo "$(date): Pushing to docker"
-echo -e "Want to push to Docker (y/n)"
+echo -e "Want to push $VERSION and latest to Docker (y/n)"
 read CHOICE
 if [ $CHOICE = y ]
 	then
 	docker push kevinkamps/registrar:$VERSION
+	docker push kevinkamps/registrar:latest
 fi
 
 
