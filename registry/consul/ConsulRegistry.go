@@ -56,17 +56,18 @@ func (this *ConsulRegistry) initTtlChecks(wg *sync.WaitGroup) {
 	}()
 }
 
-func (this *ConsulRegistry) Start() {
+func (this *ConsulRegistry) Init() {
 	this.registrations = make(map[string]*consulapi.AgentServiceRegistration)
+	this.events = make(chan event.Event, *this.Configuration.EventsBufferSize)
+}
 
+func (this *ConsulRegistry) Start() {
 	var wg sync.WaitGroup
 
 	this.initConsulConnection()
 	this.initTtlChecks(&wg)
 
 	// handle events
-	this.events = make(chan event.Event, *this.Configuration.EventsBufferSize)
-	log.Println("Registry - Consul: Started listening for events.")
 	for e := range this.events {
 
 		if helper.IsInstanceOf(e, (*event.StartEvent)(nil)) {

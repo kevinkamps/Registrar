@@ -65,6 +65,11 @@ func NewRegistryService(consulConfiguration *consul.Configuration,
 		log.Println(fmt.Sprintf("Tag Provider enabled: AWS. with config: %s", spew.Sdump(awsProviderConfiguration)))
 		service.tagProviders = append(service.tagProviders, aws.NewAwsProvider())
 	}
+
+	for _, r := range service.registries {
+		r.Init()
+	}
+
 	return &service
 }
 
