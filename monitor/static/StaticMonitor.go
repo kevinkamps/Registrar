@@ -76,8 +76,9 @@ func (this *StaticMonitor) Start() {
 			address = application.Ip
 		}
 
-		e := this.registerApplication(address, application)
+		e := this.createRegisterApplicationEvent(address, application)
 		this.RegistryService.ProcessIpProviders(e)
+		this.RegistryService.AddEvent(e)
 		this.checks[e.Id] = &Check{Application: application, Ip: e.Address, EventId: e.Id, deregistered: false}
 
 	}
@@ -102,7 +103,8 @@ func (this *StaticMonitor) Start() {
 					log.Println(fmt.Sprintf("Monitor - Static config: Check succeeded for %s %s:%s (timeout %s)", check.Application.Protocol, check.Ip, strconv.Itoa(check.Application.Port), time.Duration(*this.Configuration.CheckTimout)*time.Second))
 				}
 				if check.deregistered {
-					this.registerApplication(check.Ip, check.Application)
+					e := this.createRegisterApplicationEvent(check.Ip, check.Application)
+					this.RegistryService.AddEvent(e)
 					check.deregistered = false
 				}
 			}
@@ -116,7 +118,7 @@ func (this *StaticMonitor) Start() {
 	}
 }
 
-func (this *StaticMonitor) registerApplication(address string, application StaticApplication) *event.StartEvent {
+func (this *StaticMonitor) createRegisterApplicationEvent(address string, application StaticApplication) *event.StartEvent {
 	e := &event.StartEvent{
 		Id:      fmt.Sprintf("registrar-static-%s-%s-%d", this.hostname, application.Name, application.Port),
 		Name:    application.Name,
@@ -124,8 +126,6 @@ func (this *StaticMonitor) registerApplication(address string, application Stati
 		Port:    application.Port,
 		Tags:    application.Tags,
 	}
-
-	this.RegistryService.AddEvent(e)
 
 	return e
 }
