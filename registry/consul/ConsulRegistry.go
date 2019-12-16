@@ -66,6 +66,7 @@ func (this *ConsulRegistry) Start() {
 
 	// handle events
 	this.events = make(chan event.Event, *this.Configuration.EventsBufferSize)
+	log.Println("Registry - Consul: Started listening for events.")
 	for e := range this.events {
 
 		if helper.IsInstanceOf(e, (*event.StartEvent)(nil)) {
