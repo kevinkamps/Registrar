@@ -2,6 +2,7 @@ package static
 
 import (
 	"fmt"
+	"github.com/davecgh/go-spew/spew"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"kevinkamps/registrar/registry"
@@ -70,15 +71,14 @@ func (this *StaticMonitor) Start() {
 	}
 	this.hostname = hostname
 
+	log.Println(fmt.Sprintf("Monitor - Static: Configuration: %s", spew.Sdump(config)))
 	for _, application := range config.Applications {
 		address := "127.0.0.1"
 		if application.Ip != "" {
 			address = application.Ip
 		}
 
-		e := this.createRegisterApplicationEvent(address, application)
-		this.RegistryService.ProcessIpProviders(e)
-		this.RegistryService.AddEvent(e)
+		e := this.registerAppliction(address, application)
 		this.checks[e.Id] = &Check{Application: application, Ip: e.Address, EventId: e.Id, deregistered: false}
 
 	}
@@ -103,8 +103,7 @@ func (this *StaticMonitor) Start() {
 					log.Println(fmt.Sprintf("Monitor - Static config: Check succeeded for %s %s:%s (timeout %s)", check.Application.Protocol, check.Ip, strconv.Itoa(check.Application.Port), time.Duration(*this.Configuration.CheckTimout)*time.Second))
 				}
 				if check.deregistered {
-					e := this.createRegisterApplicationEvent(check.Ip, check.Application)
-					this.RegistryService.AddEvent(e)
+					this.registerAppliction(check.Ip, check.Application)
 					check.deregistered = false
 				}
 			}
@@ -118,7 +117,7 @@ func (this *StaticMonitor) Start() {
 	}
 }
 
-func (this *StaticMonitor) createRegisterApplicationEvent(address string, application StaticApplication) *event.StartEvent {
+func (this *StaticMonitor) registerAppliction(address string, application StaticApplication) *event.StartEvent {
 	e := &event.StartEvent{
 		Id:      fmt.Sprintf("registrar-static-%s-%s-%d", this.hostname, application.Name, application.Port),
 		Name:    application.Name,
@@ -127,5 +126,6 @@ func (this *StaticMonitor) createRegisterApplicationEvent(address string, applic
 		Tags:    application.Tags,
 	}
 
+	this.RegistryService.AddEvent(e)
 	return e
 }
